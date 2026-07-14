@@ -19,6 +19,24 @@ function getHtmlFiles(dir, files_ = []) {
     return files_;
 }
 
+// Helper to copy folder recursively
+function copyFolderRecursiveSync(source, target) {
+    if (!fs.existsSync(source)) return;
+    if (!fs.existsSync(target)) {
+        fs.mkdirSync(target, { recursive: true });
+    }
+    const files = fs.readdirSync(source);
+    for (const file of files) {
+        const curSource = join(source, file);
+        const curTarget = join(target, file);
+        if (fs.lstatSync(curSource).isDirectory()) {
+            copyFolderRecursiveSync(curSource, curTarget);
+        } else {
+            fs.copyFileSync(curSource, curTarget);
+        }
+    }
+}
+
 const htmlFiles = getHtmlFiles(process.cwd());
 const input = {};
 
@@ -35,6 +53,17 @@ htmlFiles.forEach(file => {
 
 export default defineConfig({
     root: './',
+    plugins: [
+        {
+            name: 'copy-assets-plugin',
+            closeBundle() {
+                const src = resolve(process.cwd(), 'assets');
+                const dest = resolve(process.cwd(), 'dist/assets');
+                copyFolderRecursiveSync(src, dest);
+                console.log('Successfully copied assets folder to dist/assets');
+            }
+        }
+    ],
     build: {
         outDir: 'dist',
         rollupOptions: {
