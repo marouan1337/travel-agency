@@ -120,9 +120,11 @@ header{
 .activities_section{
     background-color: white;
     overflow: hidden;
+    position: relative;
 }
 .activities_swiper{
     padding-left: calc((100% - 1140px) / 2);
+    padding-right: calc((100% - 1140px) / 2);
 }
 .activities_swiper .swiper-slide{
     width: 300px;
@@ -193,6 +195,7 @@ header{
 @media (max-width: 1199px) {
     .activities_swiper{
         padding-left: 20px;
+        padding-right: 20px;
     }
 }
 @media (max-width: 768px) {
